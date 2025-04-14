@@ -445,6 +445,15 @@ console.log('--------Exercise 19--------');
 
 game.catchPokemon = function(pokemonObj) {
   
+  const itemPokeball = game.items.find(items => items.name === "pokeball");
+  //I knew I needed an if statement but took me a while to work it properly
+ 
+  
+  if (!itemPokeball || itemPokeball.quantity <= 0) {
+    console.log("Not enough Pokeballs to catch Pokemon");
+    return ; 
+  } 
+
   //If the party is less than or equal to 6 push a pokemon in
   if (game.party.length < 6) {
     game.party.push(pokemonObj);
@@ -452,23 +461,17 @@ game.catchPokemon = function(pokemonObj) {
   } else {
     game.billsPc.push(pokemonObj);
   }
-  
-  const itemPokeball = game.items.find(items => items.name === "pokeball")
-  //I knew I needed an if statement but took me a while to work it properly
-  if (itemPokeball.quantity <= 0) {
-    return "Not enough Pokeballs to catch Pokemon"; 
-  } else {
-    itemPokeball.quantity--;
-    return "";
-  }  
+
+  itemPokeball.quantity--; 
   //Is return "" still needed?
-  
+ 
 } 
 //caught some pokemon which have gone to billsPc. 
 
 game.catchPokemon(pokedex[65])
 
-//HELP still goes past 0 or will be stuck on 0 still catching pokemon
+
+
 
 console.log(game);
 
@@ -486,26 +489,39 @@ Solve Exercise 20 here:
 console.log('--------Exercise 20--------');
 
 game.catchPokemon = function(name) {
-  const pokemonObj = pokemon.find(pokeName => pokeName.name == "");
-
-  if (pokemonObj !== undefined) {
-    if (game.party.length < 6) {
-      game.party.push(pokemonObj);
-      console.log(`You have captured ${pokemonObj.name}`);
-
-    } else {
-      game.billsPc.push(pokemonObj);
-      console.log(`You have captured ${pokemonObj.name}`);
-    }
-  //If the party is less than or equal to 6 push a pokemon in
-  } else {
-    console.log("This Pokemon does not exist");
+  if (typeof name !== "string") {
+    console.log("Invalid input — please enter a Pokémon name as a string.");
+    return;
   }
-}
 
-game.catchPokemon(pokedex[88])
+  const lowerName = name.toLowerCase();
+  const pokemonObj = pokemon.find(p => p.name.toLowerCase() === lowerName);
 
-console.log(game);
+  if (!pokemonObj) {
+    console.log(" This Pokémon does not exist.");
+    return;
+  }
+
+  const pokeballItem = game.items.find(item => item.name === "pokeball");
+
+  if (!pokeballItem || pokeballItem.quantity <= 0) {
+    console.log("Not enough Pokéballs to catch Pokémon!");
+    return ;
+  }
+
+  if (game.party.length < 6) {
+    game.party.push(pokemonObj);
+    console.log(`You caught ${pokemonObj.name} and added it to your party.`);
+  } else {
+    game.billsPc.push(pokemonObj);
+    console.log(`You caught ${pokemonObj.name}, but your party is full — sent to Bill’s PC.`);
+  }
+
+  pokeballItem.quantity++;
+};
+
+game.catchPokemon("Pikachu");
+
 
 /*
 Exercise 21
